@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Practice</title>
+</head>
+<body>
+     <title>Ludo Board</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            color: #292929;
+            font-size: clamp(22px, 5vw, 36px);
+            margin-bottom: 25px;
+        }
+
+        .board {
+            width: min(92vw, 600px);
+            aspect-ratio: 1 / 1;
+            margin: auto;
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            position: relative;
+            border: 2px solid #333;
+            background: white;
+        }
+
+        .cell {
+            border: 1px solid #777;
+            min-width: 0;
+            min-height: 0;
+        }
+
+        /* Four large home areas */
+
+        .blue-home {
+            grid-column: 1 / 7;
+            grid-row: 1 / 7;
+            background: #103fdb;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .red-home {
+            grid-column: 10 / 16;
+            grid-row: 1 / 7;
+            background: #ed382d;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .yellow-home {
+            grid-column: 1 / 7;
+            grid-row: 10 / 16;
+            background: #f1df00;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .green-home {
+            grid-column: 10 / 16;
+            grid-row: 10 / 16;
+            background: #08752c;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* White square inside each home */
+
+        .inner-home {
+            width: 72%;
+            height: 72%;
+            background: #f7f7f7;
+            border: 2px solid #444;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            place-items: center;
+            padding: 8%;
+            gap: 10%;
+        }
+
+        /* Four small coloured squares */
+
+        .piece {
+            width: 85%;
+            height: 85%;
+            border: 2px solid #333;
+        }
+
+        .blue-piece {
+            background: #103fdb;
+        }
+
+        .red-piece {
+            background: #ed382d;
+        }
+
+        .yellow-piece {
+            background: #f1df00;
+        }
+
+        .green-piece {
+            background: #08752c;
+        }
+
+        /* Coloured paths */
+
+        .path {
+            background: white;
+        }
+
+        .blue-path {
+            background: #103fdb;
+        }
+
+        .red-path {
+            background: #ed382d;
+        }
+
+        .yellow-path {
+            background: #f1df00;
+        }
+
+        .green-path {
+            background: #08752c;
+        }
+
+        /* Centre of the board */
+
+        .centre {
+            grid-column: 7 / 10;
+            grid-row: 7 / 10;
+            background: white;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            font-size: clamp(9px, 2vw, 16px);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🎲 LUDO BOARD 🎲</h1>
+
+    <div class="board" id="board">
+
+        <!-- The 225 board cells will be created with JavaScript -->
+
+        <div class="blue-home">
+            <div class="inner-home">
+                <div class="piece blue-piece"></div>
+                <div class="piece blue-piece"></div>
+                <div class="piece blue-piece"></div>
+                <div class="piece blue-piece"></div>
+            </div>
+        </div>
+
+        <div class="red-home">
+            <div class="inner-home">
+                <div class="piece red-piece"></div>
+                <div class="piece red-piece"></div>
+                <div class="piece red-piece"></div>
+                <div class="piece red-piece"></div>
+            </div>
+        </div>
+
+        <div class="yellow-home">
+            <div class="inner-home">
+                <div class="piece yellow-piece"></div>
+                <div class="piece yellow-piece"></div>
+                <div class="piece yellow-piece"></div>
+                <div class="piece yellow-piece"></div>
+            </div>
+        </div>
+
+        <div class="green-home">
+            <div class="inner-home">
+                <div class="piece green-piece"></div>
+                <div class="piece green-piece"></div>
+                <div class="piece green-piece"></div>
+                <div class="piece green-piece"></div>
+            </div>
+        </div>
+
+        <div class="centre">HOME</div>
+
+    </div>
+
+    <script>
+        const board = document.getElementById("board");
+
+        // Create the grid from the bottom layer upward.
+        for (let row = 1; row <= 15; row++) {
+            for (let col = 1; col <= 15; col++) {
+
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+
+                // Leave the four 6x6 home areas empty
+                // because the large home panels cover them.
+                const inCorner =
+                    (row <= 6 && col <= 6) ||
+                    (row <= 6 && col >= 10) ||
+                    (row >= 10 && col <= 6) ||
+                    (row >= 10 && col >= 10);
+
+                // Leave the centre 3x3 area for HOME.
+                const inCentre =
+                    row >= 7 && row <= 9 &&
+                    col >= 7 && col <= 9;
+
+                if (inCorner || inCentre) {
+                    continue;
+                }
+
+                // Top path: red
+                if (col === 8 && row <= 6) {
+                    cell.classList.add("red-path");
+                }
+
+                // Bottom path: yellow
+                else if (col === 8 && row >= 10) {
+                    cell.classList.add("yellow-path");
+                }
+
+                // Left path: blue
+                else if (row === 8 && col <= 6) {
+                    cell.classList.add("blue-path");
+                }
+
+                // Right path: green
+                else if (row === 8 && col >= 10) {
+                    cell.classList.add("green-path");
+                }
+
+                else {
+                    cell.classList.add("path");
+                }
+
+                cell.style.gridRow = row;
+                cell.style.gridColumn = col;
+
+                board.appendChild(cell);
+            }
+        }
+    </script>
+
+</body>
